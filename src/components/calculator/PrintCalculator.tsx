@@ -7,7 +7,7 @@ import { formatCurrency } from '../../utils/format'
 import { calculatePrintCost, buildPrintDescription } from '../../utils/calculatePrintCost'
 import { usePriceSettings } from '../../hooks/useDatabase'
 import { useCart } from '../../context/CartContext'
-import type { PrintJobInput, PaperSize, PrintColor, PrintSide, BindingType } from '../../types'
+import type { PrintJobInput, PaperSize, PrintColor, PrintSide } from '../../types'
 
 const paperOptions = [
   { value: 'A4', label: 'A4' },
@@ -25,15 +25,6 @@ const sideOptions = [
   { value: 'dua', label: '2 Sisi' },
 ]
 
-const bindingOptions = [
-  { value: 'none', label: 'Tanpa Jilid' },
-  { value: 'jilid_spiral', label: 'Spiral' },
-  { value: 'jilid_lem', label: 'Soft Cover (Lem Panas)' },
-  { value: 'jilid_hard', label: 'Hard Cover' },
-  { value: 'staples', label: 'Staples' },
-  { value: 'laminating', label: 'Laminating' },
-]
-
 const defaultInput: PrintJobInput = {
   paperSize: 'A4',
   color: 'hitam',
@@ -48,6 +39,15 @@ export default function PrintCalculator() {
   const { settings } = usePriceSettings()
   const { addItem } = useCart()
 
+  const bindingSettings = settings.filter((s) => s.key.startsWith('binding_') || s.category === 'binding')
+  const bindingOptions = [
+    { value: 'none', label: 'Tanpa Jilid' },
+    ...bindingSettings.map((b) => ({
+      value: b.key,
+      label: `${b.label} (${formatCurrency(b.value)})`,
+    })),
+  ]
+
   const result =
     settings.length > 0 ? calculatePrintCost(input, settings) : null
 
@@ -58,7 +58,7 @@ export default function PrintCalculator() {
   const handleAddToCart = () => {
     if (!result) return
     addItem({
-      description: buildPrintDescription(input),
+      description: buildPrintDescription(input, settings),
       quantity: 1,
       unitPrice: result.total,
       total: result.total,
@@ -95,7 +95,7 @@ export default function PrintCalculator() {
           label="Jilid / Finishing"
           options={bindingOptions}
           value={input.binding}
-          onChange={(e) => update('binding', e.target.value as BindingType)}
+          onChange={(e) => update('binding', e.target.value)}
         />
         <Input
           label="Jumlah Halaman"
@@ -134,3 +134,4 @@ export default function PrintCalculator() {
     </Card>
   )
 }
+

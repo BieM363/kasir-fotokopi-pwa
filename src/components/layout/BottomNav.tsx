@@ -4,6 +4,7 @@ const navItems = [
   { to: '/', label: 'Beranda', icon: '🏠' },
   { to: '/kasir', label: 'Kasir', icon: '🧮' },
   { to: '/stok', label: 'Stok', icon: '📦' },
+  { to: '/harga', label: 'Harga', icon: '⚙️' },
   { to: '/riwayat', label: 'Riwayat', icon: '📋' },
 ]
 
@@ -17,16 +18,17 @@ export default function BottomNav() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${
-                isActive ? 'text-primary-700' : 'text-slate-500 hover:text-slate-700'
+              `flex flex-col items-center gap-0.5 px-2.5 py-1 rounded-lg transition-colors ${
+                isActive ? 'text-primary-700 font-semibold' : 'text-slate-500 hover:text-slate-700'
               }`
             }
           >
             <span className="text-xl">{item.icon}</span>
-            <span className="text-xs font-medium">{item.label}</span>
+            <span className="text-[11px] font-medium">{item.label}</span>
           </NavLink>
         ))}
       </div>
     </nav>
   )
 }
+

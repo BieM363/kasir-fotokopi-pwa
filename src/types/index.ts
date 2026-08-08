@@ -1,7 +1,7 @@
 export type PaperSize = 'A4' | 'F4' | 'A3'
 export type PrintColor = 'hitam' | 'warna'
 export type PrintSide = 'satu' | 'dua'
-export type BindingType = 'none' | 'jilid_spiral' | 'jilid_lem' | 'jilid_hard' | 'staples' | 'laminating'
+export type BindingType = string
 export type ProductCategory = 'kertas' | 'tinta' | 'jilid' | 'lainnya'
 export type PaymentMethod = 'cash' | 'transfer' | 'qris'
 export type TransactionItemType = 'cetak' | 'jilid' | 'produk'
@@ -23,6 +23,7 @@ export interface PriceSetting {
   label: string
   value: number
   unit: string
+  category?: 'print' | 'binding'
 }
 
 export interface TransactionItem {
@@ -38,9 +39,11 @@ export interface Transaction {
   id?: number
   items: TransactionItem[]
   subtotal: number
-  discount: number
   total: number
   paymentMethod: PaymentMethod
+  cashPaid?: number
+  change?: number
+  discount?: number
   customerName?: string
   notes?: string
   createdAt: Date
@@ -52,7 +55,7 @@ export interface PrintJobInput {
   sides: PrintSide
   pages: number
   copies: number
-  binding: BindingType
+  binding: string
 }
 
 export interface PrintJobResult {
@@ -65,3 +68,4 @@ export interface PrintJobResult {
 export interface CartItem extends TransactionItem {
   tempId: string
 }
+

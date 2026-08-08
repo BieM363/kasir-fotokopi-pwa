@@ -4,14 +4,23 @@ import Badge from '../ui/Badge'
 import { formatCurrency, formatDate } from '../../utils/format'
 import { useTransactions, useShopSettings } from '../../hooks/useDatabase'
 import { printReceipt } from '../../utils/printReceipt'
+import db from '../../db'
 import type { Transaction } from '../../types'
 
 export default function TransactionList() {
-  const { transactions, loading } = useTransactions()
+  const { transactions, loading, refresh } = useTransactions()
   const { shop } = useShopSettings()
 
   const handleReprint = (tx: Transaction) => {
     printReceipt(tx, shop)
+  }
+
+  const handleDelete = async (id: number) => {
+    const formattedId = String(id).padStart(5, '0')
+    if (confirm(`Hapus transaksi #${formattedId}? Tindakan ini tidak dapat dibatalkan.`)) {
+      await db.transactions.delete(id)
+      refresh()
+    }
   }
 
   if (loading) {
@@ -38,17 +47,34 @@ export default function TransactionList() {
                   #{String(tx.id).padStart(5, '0')}
                 </span>
                 <Badge variant="info">{tx.items.length} item</Badge>
+                <Badge variant="default" className="capitalize">
+                  {tx.paymentMethod === 'cash' ? 'Tunai' : tx.paymentMethod}
+                </Badge>
               </div>
               <p className="text-xs text-slate-500 mt-1">{formatDate(tx.createdAt)}</p>
-              {tx.customerName && (
-                <p className="text-sm text-slate-600 mt-1">{tx.customerName}</p>
+              {tx.paymentMethod === 'cash' && typeof tx.change === 'number' && (
+                <p className="text-xs text-emerald-700 font-medium mt-1">
+                  Bayar: {formatCurrency(tx.cashPaid ?? tx.total)} · Kembalian: {formatCurrency(tx.change)}
+                </p>
               )}
             </div>
-            <div className="text-right">
+
+            <div className="text-right flex flex-col items-end">
               <p className="font-bold text-primary-800">{formatCurrency(tx.total)}</p>
-              <Button size="sm" variant="ghost" className="mt-1" onClick={() => handleReprint(tx)}>
-                🖨️ Cetak
-              </Button>
+              <div className="flex gap-1 mt-1">
+                <Button size="sm" variant="ghost" onClick={() => handleReprint(tx)} title="Cetak Ulang">
+                  🖨️ Struk
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                  onClick={() => handleDelete(tx.id!)}
+                  title="Hapus Log Transaksi"
+                >
+                  🗑️ Hapus
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -65,3 +91,4 @@ export default function TransactionList() {
     </div>
   )
 }
+

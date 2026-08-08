@@ -1,6 +1,6 @@
-# Kasir Offline Fotokopi (PWA)
+# Kasir Offline Fotokopi (PWA) - BieM363
 
-Aplikasi kasir offline untuk toko fotokopi — cepat, ringan, dan bisa dipakai tanpa internet.
+Aplikasi kasir offline untuk toko fotokopi oleh **BieM363** — cepat, ringan, dan 100% bekerja tanpa internet.
 
 ## Tech Stack
 
@@ -9,12 +9,15 @@ Aplikasi kasir offline untuk toko fotokopi — cepat, ringan, dan bisa dipakai t
 - **Dexie.js** — penyimpanan lokal via IndexedDB
 - **vite-plugin-pwa** — installable PWA dengan service worker
 
-## Fitur
+## Fitur Utama
 
-- **Kalkulator Cetak & Jilid** — hitung biaya otomatis (A4/F4/A3, hitam/warna, 1-2 sisi, spiral, soft/hard cover, laminating)
+- **Branding BieM363** — identitas projek kodingan BieM363 di header, nav, struk, & meta
+- **Kalkulator Cetak & Jilid** — hitung biaya cetak & finishing secara presisi (A4/F4/A3, hitam/warna, 1-2 sisi)
+- **Kalkulator Pembayaran & Kembalian** — input Uang Diterima, nominal cepat (uang pas, 10rb, 20rb, 50rb, 100rb), dan hitung Kembalian otomatis
+- **Menu Atur Harga & Jilid Dinamis** — kelola tarif cetak & opsi jilid (tambah/edit/hapus jilid tanpa di-hardcode)
+- **Hapus Log Transaksi** — tombol hapus log untuk meminimalisir kesalahan input data pembayaran
 - **Manajemen Stok ATK** — kertas, tinta, bahan jilid, alert stok rendah
-- **Riwayat Transaksi** — semua transaksi tersimpan lokal di perangkat
-- **Cetak Struk** — via Web Printing API (`window.print()`), format thermal 80mm
+- **Cetak Struk Thermal** — via Web Printing API (`window.print()`), format 80mm
 - **100% Offline** — tidak perlu koneksi internet setelah pertama kali di-load
 
 ## Menjalankan
@@ -33,30 +36,7 @@ npm run build
 npm run preview
 ```
 
-## Struktur Komponen
+## Repository GitHub
 
-```
-src/
-├── components/
-│   ├── ui/           # Button, Card, Input, Modal, Badge, Select
-│   ├── layout/       # Header, BottomNav, AppLayout
-│   ├── calculator/   # PrintCalculator, CartPanel, CheckoutModal
-│   ├── stock/        # StockList
-│   └── transaction/  # TransactionList
-├── context/          # CartContext (state keranjang)
-├── db/               # Dexie schema + seed data
-├── hooks/            # useProducts, useTransactions, dll
-├── pages/            # Home, Kasir, Stok, Riwayat
-├── types/            # TypeScript interfaces
-└── utils/            # formatCurrency, calculatePrintCost, printReceipt
-```
+https://github.com/BieM363/kasir-fotokopi-pwa
 
-## Metode Kerja
-
-Proyek ini dirancang dengan **Component-Driven Development** — setiap bagian UI adalah komponen kecil yang independen, sehingga mudah ditinggal saat melayani pelanggan dan dilanjutkan nanti.
-
-## Install sebagai PWA
-
-1. Buka aplikasi di browser (Chrome/Edge)
-2. Klik ikon "Install" di address bar
-3. Aplikasi akan muncul seperti app native di desktop/HP

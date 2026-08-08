@@ -37,6 +37,10 @@ function buildReceiptHTML(transaction: Transaction, shop: ShopInfo): string {
     qris: 'QRIS',
   }
 
+  const isCash = transaction.paymentMethod === 'cash'
+  const cashPaidVal = transaction.cashPaid ?? transaction.total
+  const changeVal = transaction.change ?? 0
+
   return `
     <style>
       #receipt-print {
@@ -54,7 +58,8 @@ function buildReceiptHTML(transaction: Transaction, shop: ShopInfo): string {
       .receipt-item-name { font-weight: bold; }
       .receipt-item-detail { font-size: 11px; color: #333; }
       .receipt-item-total { text-align: right; }
-      .receipt-total { font-weight: bold; font-size: 14px; text-align: right; margin-top: 8px; }
+      .receipt-row { display: flex; justify-content: space-between; margin-top: 2px; }
+      .receipt-total { font-weight: bold; font-size: 14px; text-align: right; margin-top: 6px; }
       .receipt-footer { text-align: center; margin-top: 12px; font-size: 11px; }
     </style>
     <div class="receipt-header">
@@ -66,19 +71,32 @@ function buildReceiptHTML(transaction: Transaction, shop: ShopInfo): string {
     <div>
       <div>No: #${String(transaction.id).padStart(5, '0')}</div>
       <div>${formatDate(transaction.createdAt)}</div>
-      ${transaction.customerName ? `<div>Pelanggan: ${transaction.customerName}</div>` : ''}
     </div>
     <div class="receipt-divider"></div>
     ${itemsHTML}
     <div class="receipt-divider"></div>
-    <div style="display:flex;justify-content:space-between"><span>Subtotal</span><span>${formatCurrency(transaction.subtotal)}</span></div>
-    ${transaction.discount > 0 ? `<div style="display:flex;justify-content:space-between"><span>Diskon</span><span>-${formatCurrency(transaction.discount)}</span></div>` : ''}
     <div class="receipt-total">TOTAL: ${formatCurrency(transaction.total)}</div>
-    <div style="margin-top:4px">Bayar: ${paymentLabels[transaction.paymentMethod] ?? transaction.paymentMethod}</div>
-    ${transaction.notes ? `<div style="margin-top:4px;font-size:11px">Catatan: ${transaction.notes}</div>` : ''}
+    <div class="receipt-row" style="margin-top:4px">
+      <span>Metode</span>
+      <span>${paymentLabels[transaction.paymentMethod] ?? transaction.paymentMethod}</span>
+    </div>
+    ${
+      isCash
+        ? `
+    <div class="receipt-row">
+      <span>Diterima</span>
+      <span>${formatCurrency(cashPaidVal)}</span>
+    </div>
+    <div class="receipt-row" style="font-weight:bold">
+      <span>Kembalian</span>
+      <span>${formatCurrency(changeVal)}</span>
+    </div>
+    `
+        : ''
+    }
     <div class="receipt-footer">
-      <p>Terima kasih!</p>
-      <p>Barang yang sudah dicetak<br/>tidak dapat dikembalikan</p>
+      <p>Terima kasih atas kunjungan Anda!</p>
+      <p style="font-size: 10px; margin-top: 4px; color: #555;">Kasir Offline PWA · BieM363</p>
     </div>
   `
 }
@@ -86,3 +104,4 @@ function buildReceiptHTML(transaction: Transaction, shop: ShopInfo): string {
 export function getReceiptPreviewHTML(transaction: Transaction, shop: ShopInfo): string {
   return buildReceiptHTML(transaction, shop)
 }
+

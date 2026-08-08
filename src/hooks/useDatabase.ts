@@ -30,10 +30,10 @@ export function useProducts() {
 }
 
 export function usePriceSettings() {
-  const { data: settings, loading } = useLiveTable<PriceSetting>(
+  const { data: settings, loading, refresh } = useLiveTable<PriceSetting>(
     () => db.priceSettings.toArray(),
   )
-  return { settings, loading }
+  return { settings, loading, refresh }
 }
 
 export function useTransactions() {

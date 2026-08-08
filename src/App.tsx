@@ -4,6 +4,7 @@ import AppLayout from './components/layout/AppLayout'
 import HomePage from './pages/HomePage'
 import KasirPage from './pages/KasirPage'
 import StockPage from './pages/StockPage'
+import PriceSettingsPage from './pages/PriceSettingsPage'
 import HistoryPage from './pages/HistoryPage'
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/kasir" element={<KasirPage />} />
             <Route path="/stok" element={<StockPage />} />
+            <Route path="/harga" element={<PriceSettingsPage />} />
             <Route path="/riwayat" element={<HistoryPage />} />
           </Route>
         </Routes>
@@ -22,3 +24,4 @@ export default function App() {
     </BrowserRouter>
   )
 }
+

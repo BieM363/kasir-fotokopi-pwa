@@ -79,15 +79,29 @@ export default function KasirPage() {
         onClose={() => setSuccessTx(null)}
         title="Transaksi Berhasil!"
       >
-        <div className="text-center py-4">
-          <p className="text-4xl mb-3">✅</p>
-          <p className="text-2xl font-bold text-primary-800">
-            {formatCurrency(successTx?.total ?? 0)}
-          </p>
-          <p className="text-sm text-slate-500 mt-2">
+        <div className="text-center py-4 space-y-3">
+          <p className="text-4xl">✅</p>
+          <div>
+            <p className="text-sm text-slate-500">Total Tagihan</p>
+            <p className="text-2xl font-bold text-primary-800">
+              {formatCurrency(successTx?.total ?? 0)}
+            </p>
+          </div>
+
+          {successTx?.paymentMethod === 'cash' && typeof successTx.change === 'number' && (
+            <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-emerald-800">
+              <p className="text-xs uppercase font-medium">Kembalian</p>
+              <p className="text-xl font-bold">{formatCurrency(successTx.change)}</p>
+              <p className="text-xs text-emerald-600 mt-0.5">
+                (Diterima: {formatCurrency(successTx.cashPaid ?? successTx.total)})
+              </p>
+            </div>
+          )}
+
+          <p className="text-sm text-slate-500">
             Transaksi #{String(successTx?.id).padStart(5, '0')} tersimpan
           </p>
-          <p className="text-xs text-slate-400 mt-1">Struk sedang dicetak...</p>
+          <p className="text-xs text-slate-400">Struk sedang dicetak...</p>
         </div>
       </Modal>
     </>

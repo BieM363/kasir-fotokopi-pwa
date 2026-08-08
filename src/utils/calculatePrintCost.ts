@@ -1,22 +1,10 @@
-import type { PrintJobInput, PrintJobResult, PriceSetting, BindingType } from '../types'
+import type { PrintJobInput, PrintJobResult, PriceSetting } from '../types'
 
 function getPrintPriceKey(input: PrintJobInput): string {
   const size = input.paperSize.toLowerCase()
   const color = input.color
   const side = input.sides === 'satu' ? 'satu' : 'dua'
   return `print_${size}_${color}_${side}`
-}
-
-function getBindingKey(binding: BindingType): string | null {
-  const map: Record<BindingType, string | null> = {
-    none: null,
-    jilid_spiral: 'binding_spiral',
-    jilid_lem: 'binding_lem',
-    jilid_hard: 'binding_hard',
-    staples: 'binding_staples',
-    laminating: 'binding_laminating',
-  }
-  return map[binding]
 }
 
 export function calculatePrintCost(
@@ -40,21 +28,20 @@ export function calculatePrintCost(
   })
 
   let bindingCost = 0
-  const bindingKey = getBindingKey(input.binding)
+  const selectedBinding = priceSettings.find((p) => p.key === input.binding)
 
-  if (bindingKey && priceMap[bindingKey]) {
-    if (input.binding === 'laminating') {
-      bindingCost = input.pages * input.copies * priceMap[bindingKey]
+  if (input.binding && input.binding !== 'none' && selectedBinding) {
+    if (selectedBinding.unit === 'lembar') {
+      const sheetsCount = input.pages * input.copies
+      bindingCost = sheetsCount * selectedBinding.value
       breakdown.push({
-        label: `Laminating × ${input.pages * input.copies} lbr`,
+        label: `${selectedBinding.label} × ${sheetsCount} lbr`,
         amount: bindingCost,
       })
     } else {
-      bindingCost = input.copies * priceMap[bindingKey]
-      const bindingLabel =
-        priceSettings.find((p) => p.key === bindingKey)?.label ?? 'Jilid'
+      bindingCost = input.copies * selectedBinding.value
       breakdown.push({
-        label: `${bindingLabel} × ${input.copies} eks`,
+        label: `${selectedBinding.label} × ${input.copies} eks`,
         amount: bindingCost,
       })
     }
@@ -68,16 +55,18 @@ export function calculatePrintCost(
   }
 }
 
-export function buildPrintDescription(input: PrintJobInput): string {
+export function buildPrintDescription(input: PrintJobInput, priceSettings: PriceSetting[] = []): string {
   const colorLabel = input.color === 'hitam' ? 'Hitam Putih' : 'Warna'
   const sideLabel = input.sides === 'satu' ? '1 sisi' : '2 sisi'
-  const bindingLabels: Record<BindingType, string> = {
-    none: '',
-    jilid_spiral: ' + Spiral',
-    jilid_lem: ' + Soft Cover',
-    jilid_hard: ' + Hard Cover',
-    staples: ' + Staples',
-    laminating: ' + Laminating',
+  
+  let bindingText = ''
+  if (input.binding && input.binding !== 'none') {
+    const bindingSetting = priceSettings.find((p) => p.key === input.binding)
+    if (bindingSetting) {
+      bindingText = ` + ${bindingSetting.label}`
+    }
   }
-  return `Cetak ${input.paperSize} ${colorLabel} (${sideLabel}) ${input.pages}hlm × ${input.copies}eks${bindingLabels[input.binding]}`
+
+  return `Cetak ${input.paperSize} ${colorLabel} (${sideLabel}) ${input.pages}hlm × ${input.copies}eks${bindingText}`
 }
+
