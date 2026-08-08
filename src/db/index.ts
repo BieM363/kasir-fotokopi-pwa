@@ -18,6 +18,22 @@ db.version(1).stores({
 export default db
 
 export async function seedDatabase() {
+  // Auto-migrate legacy default shop settings for existing users (e.g. Vercel deployment)
+  const existingName = await db.settings.get('shop_name')
+  if (!existingName || existingName.value === 'Fotokopi Jaya' || existingName.value === 'Fotokopi') {
+    await db.settings.put({ key: 'shop_name', value: 'Fotocopy Bintang Perdana' })
+  }
+
+  const existingAddress = await db.settings.get('shop_address')
+  if (!existingAddress || existingAddress.value === 'Jl. Contoh No. 123') {
+    await db.settings.put({ key: 'shop_address', value: 'Pertokoan Murni No 108' })
+  }
+
+  const existingPhone = await db.settings.get('shop_phone')
+  if (!existingPhone || existingPhone.value === '0812-3456-7890') {
+    await db.settings.put({ key: 'shop_phone', value: '' })
+  }
+
   const count = await db.priceSettings.count()
   if (count > 0) return
 

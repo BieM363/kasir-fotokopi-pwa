@@ -48,11 +48,21 @@ export function useShopSettings() {
     () => db.settings.toArray(),
   )
 
-  const shop = {
-    name: settings.find((s) => s.key === 'shop_name')?.value || 'Fotocopy Bintang Perdana',
-    address: settings.find((s) => s.key === 'shop_address')?.value || 'Pertokoan Murni No 108',
-    phone: settings.find((s) => s.key === 'shop_phone')?.value || '',
-  }
+  const rawName = settings.find((s) => s.key === 'shop_name')?.value
+  const rawAddress = settings.find((s) => s.key === 'shop_address')?.value
+  const rawPhone = settings.find((s) => s.key === 'shop_phone')?.value
+
+  const name = (!rawName || rawName === 'Fotokopi Jaya' || rawName === 'Fotokopi')
+    ? 'Fotocopy Bintang Perdana'
+    : rawName
+
+  const address = (!rawAddress || rawAddress === 'Jl. Contoh No. 123')
+    ? 'Pertokoan Murni No 108'
+    : rawAddress
+
+  const phone = (rawPhone === '0812-3456-7890') ? '' : (rawPhone ?? '')
+
+  const shop = { name, address, phone }
 
   return { shop, settings, refresh }
 }
