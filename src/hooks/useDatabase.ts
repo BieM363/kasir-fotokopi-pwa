@@ -1,3 +1,8 @@
+/**
+ * Kasir Offline Fotokopi PWA
+ * Database Hooks & Logic Controllers
+ * @author BieM363
+ */
 import { useState, useEffect, useCallback } from 'react'
 import db from '../db'
 import type { Product, PriceSetting, Transaction } from '../types'

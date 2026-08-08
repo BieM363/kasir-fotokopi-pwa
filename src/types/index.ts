@@ -1,3 +1,8 @@
+/**
+ * Kasir Offline Fotokopi PWA
+ * TypeScript Models & Interface Definitions
+ * @author BieM363
+ */
 export type PaperSize = 'A4' | 'F4' | 'A3'
 export type PrintColor = 'hitam' | 'warna'
 export type PrintSide = 'satu' | 'dua'

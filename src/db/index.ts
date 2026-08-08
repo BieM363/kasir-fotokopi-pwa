@@ -1,3 +1,8 @@
+/**
+ * Kasir Offline Fotokopi PWA
+ * Database Schema & Seed Data (Dexie IndexedDB)
+ * @author BieM363
+ */
 import Dexie, { type EntityTable } from 'dexie'
 import type { Product, PriceSetting, Transaction } from '../types'
 

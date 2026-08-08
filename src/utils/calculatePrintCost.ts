@@ -1,3 +1,8 @@
+/**
+ * Kasir Offline Fotokopi PWA
+ * Calculation Utility Engine
+ * @author BieM363
+ */
 import type { PrintJobInput, PrintJobResult, PriceSetting } from '../types'
 
 function getPrintPriceKey(input: PrintJobInput): string {

@@ -1,3 +1,8 @@
+/**
+ * Kasir Offline Fotokopi PWA
+ * Thermal Receipt Printer Utility
+ * @author BieM363
+ */
 import type { Transaction } from '../types'
 import { formatCurrency, formatDate } from './format'
 
