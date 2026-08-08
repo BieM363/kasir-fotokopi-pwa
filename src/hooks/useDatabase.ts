@@ -44,17 +44,17 @@ export function useTransactions() {
 }
 
 export function useShopSettings() {
-  const { data: settings } = useLiveTable<{ key: string; value: string }>(
+  const { data: settings, refresh } = useLiveTable<{ key: string; value: string }>(
     () => db.settings.toArray(),
   )
 
   const shop = {
-    name: settings.find((s) => s.key === 'shop_name')?.value ?? 'Fotokopi',
-    address: settings.find((s) => s.key === 'shop_address')?.value ?? '',
-    phone: settings.find((s) => s.key === 'shop_phone')?.value ?? '',
+    name: settings.find((s) => s.key === 'shop_name')?.value || 'Fotocopy Bintang Perdana',
+    address: settings.find((s) => s.key === 'shop_address')?.value || 'Pertokoan Murni No 108',
+    phone: settings.find((s) => s.key === 'shop_phone')?.value || '',
   }
 
-  return { shop, settings }
+  return { shop, settings, refresh }
 }
 
 export function useTodayStats() {

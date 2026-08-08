@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../components/layout/Header'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
@@ -7,7 +7,7 @@ import Modal, { ModalActions } from '../components/ui/Modal'
 import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import { formatCurrency } from '../utils/format'
-import { usePriceSettings } from '../hooks/useDatabase'
+import { usePriceSettings, useShopSettings } from '../hooks/useDatabase'
 import db from '../db'
 import type { PriceSetting } from '../types'
 
@@ -25,12 +25,32 @@ const emptyBindingForm: BindingFormData = {
 
 export default function PriceSettingsPage() {
   const { settings, loading, refresh } = usePriceSettings()
+  const { shop, refresh: refreshShop } = useShopSettings()
+  const [shopName, setShopName] = useState(shop.name)
+  const [shopAddress, setShopAddress] = useState(shop.address)
+
+  useEffect(() => {
+    setShopName(shop.name)
+    setShopAddress(shop.address)
+  }, [shop.name, shop.address])
+
+  const handleSaveShopInfo = async () => {
+    await db.settings.bulkPut([
+      { key: 'shop_name', value: shopName },
+      { key: 'shop_address', value: shopAddress },
+      { key: 'shop_phone', value: '' },
+    ])
+    refreshShop()
+    alert('Informasi toko berhasil disimpan!')
+  }
+
   const [editingPrint, setEditingPrint] = useState<PriceSetting | null>(null)
   const [printValue, setPrintValue] = useState<number>(0)
 
   const [bindingModalOpen, setBindingModalOpen] = useState(false)
   const [editingBinding, setEditingBinding] = useState<PriceSetting | null>(null)
   const [bindingForm, setBindingForm] = useState<BindingFormData>(emptyBindingForm)
+
 
   // Separate print rates vs binding options
   const printSettings = settings.filter((s) => s.key.startsWith('print_'))
@@ -101,6 +121,31 @@ export default function PriceSettingsPage() {
       <Header title="Atur Harga & Jilid" subtitle="BieM363 · Kelola tarif & pilihan jilid" />
 
       <main className="max-w-lg mx-auto p-4 space-y-6">
+        {/* Section 0: Informasi Toko Struk */}
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-base font-bold text-slate-800">Informasi Toko (Struk Cetak)</h2>
+            <p className="text-xs text-slate-500">Kustomisasi nama & alamat yang tercetak di struk thermal</p>
+          </div>
+          <Card padding="sm" className="space-y-3">
+            <Input
+              label="Nama Toko / Fotokopi"
+              value={shopName}
+              onChange={(e) => setShopName(e.target.value)}
+              placeholder="Fotocopy Bintang Perdana"
+            />
+            <Input
+              label="Alamat Toko"
+              value={shopAddress}
+              onChange={(e) => setShopAddress(e.target.value)}
+              placeholder="Pertokoan Murni No 108"
+            />
+            <Button size="sm" onClick={handleSaveShopInfo} className="w-full">
+              Simpan Informasi Toko
+            </Button>
+          </Card>
+        </section>
+
         {/* Section 1: Dynamic Binding Management */}
         <section className="space-y-3">
           <div className="flex justify-between items-center">

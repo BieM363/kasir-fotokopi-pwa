@@ -53,8 +53,9 @@ export async function seedDatabase() {
   ])
 
   await db.settings.bulkPut([
-    { key: 'shop_name', value: 'Fotokopi Jaya' },
-    { key: 'shop_address', value: 'Jl. Contoh No. 123' },
-    { key: 'shop_phone', value: '0812-3456-7890' },
+    { key: 'shop_name', value: 'Fotocopy Bintang Perdana' },
+    { key: 'shop_address', value: 'Pertokoan Murni No 108' },
+    { key: 'shop_phone', value: '' },
   ])
 }
+

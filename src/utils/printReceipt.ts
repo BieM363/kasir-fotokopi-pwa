@@ -63,9 +63,9 @@ function buildReceiptHTML(transaction: Transaction, shop: ShopInfo): string {
       .receipt-footer { text-align: center; margin-top: 12px; font-size: 11px; }
     </style>
     <div class="receipt-header">
-      <h1>${shop.name}</h1>
-      <p>${shop.address}</p>
-      <p>Telp: ${shop.phone}</p>
+      <h1>${shop.name || 'Fotocopy Bintang Perdana'}</h1>
+      ${shop.address ? `<p>${shop.address}</p>` : ''}
+      ${shop.phone ? `<p>Telp: ${shop.phone}</p>` : ''}
     </div>
     <div class="receipt-divider"></div>
     <div>
